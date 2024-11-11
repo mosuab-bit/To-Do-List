@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- Eternal Libraries -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <style>
+         body{
+            background-color: rgb(30,0,77);
+            font-family: "Tajawal", sans-serif;
+
+         }
+         .task{
+            display: flex;
+            background-color: white;
+            padding: 4px;
+            border-bottom: solid black 1px;
+            transition: box-shadow 0.2s;
+         }
+        
+         .done{
+            background-color: greenyellow;
+         }
+         .task:hover{
+            box-shadow: 0 3px 15px rgba(97, 97, 97, 0.843);
+         }
+        .tasks-table{
+            width: 60%;
+            background-color: rgb(239, 239, 239);
+            /* height: 500px; */
+            margin-top: 130px;
+        }
+        
+        button{
+           border: none;
+           font-size: 20px;
+           box-shadow: 0 3px 5px rgba(168, 168, 168, 0.38);
+        }
+
+        button.circular{
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            line-height: 0;
+        }
+    </style>
+</head>
+<body>
+    <div style="direction: rtl;">
+        <!-- here we declare main div and center div because we don't want make main div contain center item because if we have another item we don't put them in the center -->
+         <!-- Center Div -->
+        <div style="display: flex;justify-content: center;align-items: center;">
+
+            <!-- Tasks Table -->
+            <div class="tasks-table">
+
+                <!-- Header -->
+                <div style="width: 100%;text-align: center;background-color: rgb(88, 21, 151);color: white;padding-top: 8px;padding-bottom: 8px;">
+                  <h1 style="display: inline;">مهامي</h1>
+                  <button class="circular" style="float: right;background-color: white;margin-right: 10px;">
+                    <span id="add-btn" class="material-icons">
+                       add
+                    </span>
+                  </button>
+                </div>
+                <!-- Header -->
+
+                <!-- Tasks -->
+                 <div id="tasks" style="padding: 20px;">
+
+                    <!-- Task -->
+                     <div class="task">
+
+                        <!-- Task Info -->
+                         <div style="width: 70%;">
+                           <h1>قراءة كتاب</h1>
+
+                           <div>
+                            <span class="material-icons">
+                                calendar_month
+                             </span>
+                            <span>
+                                10/10/2030
+                            </span>
+                           </div>
+                         </div>
+                        <!--// Task Info //-->
+                       
+                         <!-- Task Actions -->
+                         <div style="display: flex;justify-content: space-around;align-items: center;width: 20%;">
+                           <button class="circular" style="background-color: rgb(114,0,0);color: white;">
+                            <span class="material-icons">
+                               delete
+                            </span>
+                           </button>
+                           <button class="circular" style="background-color: rgb(0,150,30);color: white;">
+                            <span class="material-icons">
+                                done
+                            </span>
+                           </button>
+                           <button class="circular" style="background-color: rgb(0,16,197);color: white;">
+                            <span class="material-icons">
+                                edit
+                            </span>
+                           </button>
+                         </div>
+                        <!--// Task Actions //-->
+
+                     </div>
+                     <!--// Task //-->
+
+                 </div>
+                <!-- Tasks -->
+
+            </div>
+            <!--// Tasks Table //-->
+
+        </div>
+        <!--// Center Div //-->
+
+    </div>
+</body>
+ 
+<script>
+    
+    let tasks=[
+        {
+            "title":"قراءة ",
+            "date":"10/10/2022",
+            "isDone":false
+        }
+    ]
+
+    function getTasksFromStorage()
+    {
+        let retrievedTasks = JSON.parse(localStorage.getItem("tasks"))
+        tasks = retrievedTasks ?? []
+    }
+
+    getTasksFromStorage()
+
+    function fillTasksOnThePage()
+    {
+        // to cancellation manual task in html 
+        document.getElementById("tasks").innerHTML=""
+        let index = 0
+       for(task of tasks)
+       {
+        let content=
+        `
+        <div class="task ${task.isDone?'done':''}">
+
+                        <!-- Task Info -->
+                         <div style="width: 70%;">
+                           <h1>${task.title}</h1>
+
+                           <div>
+                            <span class="material-icons">
+                                calendar_month
+                             </span>
+                            <span>
+                                ${task.date}
+                            </span>
+                           </div>
+                         </div>
+                        <!--// Task Info //-->
+                       
+                         <!-- Task Actions -->
+                         <div style="display: flex;justify-content: space-around;align-items: center;width: 20%;">
+                           <button onclick="deleteTask(${index})" class="circular" style="background-color: rgb(114,0,0);color: white;">
+                            <span class="material-icons">
+                               delete
+                            </span>
+                           </button>
+
+                           ${task.isDone?`
+                            <button onclick="toogleTaskCompleted(${index})" class="circular" style="background-color: rgb(118,0,101);color: white;">
+                            <span class="material-icons">
+                               close
+                            </span>
+                           </button>
+                           `:`
+                            <button onclick="toogleTaskCompleted(${index})" class="circular" style="background-color: rgb(0,150,30);color: white;">
+                            <span class="material-icons">
+                                done
+                            </span>
+                           </button>
+                           `}
+                          
+                           <button onclick = "editTask(${index})"class="circular" style="background-color: rgb(0,16,197);color: white;">
+                            <span class="material-icons">
+                                edit
+                            </span>
+                           </button>
+                         </div>
+                        <!--// Task Actions //-->
+
+                     </div>
+        `
+        document.getElementById("tasks").innerHTML+=content
+        index++
+       }
+    }
+
+      fillTasksOnThePage()
+
+    document.getElementById("add-btn").addEventListener("click",function(){
+       
+        let now=new Date()
+        let date = now.getDate() + "/" + (now.getMonth()+1) + "/" + now.getFullYear()
+        let taskName=prompt("الرجاء ادخال عنوان المهمه")
+        
+        let taskObj={
+            "title":taskName,
+            "date":date,
+            "isDone":false
+        }
+        tasks.push(taskObj)
+        storeTasks()
+        fillTasksOnThePage()
+    })
+
+    function deleteTask(index)
+    {
+        let task = tasks[index]
+        let isConfirmed = confirm("هل انت متاكد من حذف " + task.title)
+
+        if(isConfirmed){
+            tasks.splice(index, 1)
+            storeTasks()
+            fillTasksOnThePage()
+        }
+       
+    }
+
+    function editTask(index)
+    {
+        let task = tasks[index]
+        let newTaskName = prompt("الرجاء تحديد عنوان المهمه الجديد", task.title)
+        
+        task.title = newTaskName
+        storeTasks()
+        fillTasksOnThePage()
+    }
+
+    function toogleTaskCompleted(index)
+    {
+        let task = tasks[index]
+        task.isDone = !task.isDone
+        storeTasks()
+        fillTasksOnThePage()
+    }
+
+    // ========== Local Storage ========== //
+
+    function storeTasks()
+    {
+        let tasksString = JSON.stringify(tasks)
+        localStorage.setItem("tasks",tasksString)
+    }
+</script>
+</html>
